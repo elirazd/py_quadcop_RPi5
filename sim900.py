@@ -33,9 +33,9 @@ class SIM900:
             print(str(e))
             return False
 
-    def sendMessage(self, phoneNumber, msg):
+    def send_message(self, phoneNumber, msg):
         try:
-            self.send_at_command('AT+CMGF=1\r'.encode())
+            self.send_at_command('AT+CMGF=1\r'.encode()) # Set SMS format to text mode
             self.send_at_command('AT+CMGS=\"{}\"\r'.format(phoneNumber))
             self.send_at_command('{}\r'.format(msg))
             self.mConn.write(cmd.encode())
@@ -43,6 +43,15 @@ class SIM900:
         except Exception as e:
             print(str(e))
             return False
+
+    def read_message(self, index):
+        try:
+            self.send_at_command('AT+CMGF=1')  # Set SMS format to text mode
+            response = self.send_at_command(f'AT+CMGR={index}')  # Read SMS at specified index
+            return response
+        except Exception as e:
+            print(f"Error reading SMS: {e}")
+            return None
 
     def send_at_command(self, command, wait_for_response=True):
         try:
