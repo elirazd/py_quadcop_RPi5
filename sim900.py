@@ -33,6 +33,17 @@ class SIM900:
             print(str(e))
             return False
 
+    def sendMessage(self, phoneNumber, msg):
+        try:
+            self.send_at_command('AT+CMGF=1\r'.encode())
+            self.send_at_command('AT+CMGS=\"{}\"\r'.format(phoneNumber))
+            self.send_at_command('{}\r'.format(msg))
+            self.mConn.write(cmd.encode())
+            return True
+        except Exception as e:
+            print(str(e))
+            return False
+
     def send_at_command(self, command, wait_for_response=True):
         try:
             self.connection.write((command + '\r').encode())
